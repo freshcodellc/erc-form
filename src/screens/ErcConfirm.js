@@ -115,7 +115,7 @@ function ErcConfirm() {
     actions.setSubmitting(true)
     setError(false)
     try {
-      await axios.post(`${config.API_URL}/api/forgiveness/erc`, {
+      await axios.post(`${config.API_URL}/api/application/erc`, {
         ...values,
         bank: bank.id,
         uniqueId,
