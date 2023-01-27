@@ -10,6 +10,7 @@ import Disclosures from './screens/Disclosures'
 import ErcAuth from './screens/ErcAuth'
 import ErcRecover from './screens/ErcRecover'
 import ErcConfirm from './screens/ErcConfirm'
+import ErcSuccess from './screens/ErcSuccess'
 import ForgivenessAuth from './screens/ForgivenessAuth'
 import ForgivenessCalculator from './screens/ForgivenessCalculator'
 import EZForgivenessCalculator from './screens/EZForgivenessCalculator'
@@ -79,6 +80,7 @@ function ErcRouter() {
       <ErcAuth path="/erc/auth" />
       <ErcRecover path="/erc/recover" />
       <ErcConfirm path="/erc/confirm" />
+      <ErcSuccess path="/erc/success" />
       <RedirectErc default />
     </Router>
   )

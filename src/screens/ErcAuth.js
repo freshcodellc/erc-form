@@ -120,12 +120,12 @@ function ForgivenessAuth() {
     actions.setSubmitting(true)
     setError(false)
     try {
-      await axios.post(
+      const response = await axios.post(
         `${config.API_URL}/api/application/details`,
         { ...values, bank: bank.id }
       )
       actions.setSubmitting(false)
-
+      localStorage.setItem('application', JSON.stringify(response.data))
       navigate('/erc/confirm')
     } catch (err) {
       actions.setSubmitting(false)
@@ -141,10 +141,20 @@ function ForgivenessAuth() {
           Welcome back, time to file for that Employer Retention Credit.
         </Heading>
         <p css={text}>
-          SINCE WE ALREADY PROCESSED YOUR PPP LOAN, AS WELL AS YOUR FORGIVENESS APPLICATION, WE SHOULD BE ABLE TO PROCESS AND SUBMIT YOUR ERC WITH LITTLE ADDITIONAL DATA.
+          SINCE WE ALREADY PROCESSED YOUR PPP LOAN, AS WELL AS YOUR FORGIVENESS
+          APPLICATION, WE SHOULD BE ABLE TO PROCESS AND SUBMIT YOUR ERC WITH
+          LITTLE ADDITIONAL DATA.
         </p>
         <HelperText>
-          <b>Please enter the email and forgiveness code associated with your PPP loan.</b> If you need a new code simply click the “I can’t find my code” link below. (When you filled out your PPP application with us you should have received a code to use for forgiveness. That code is 7-digits and is in the email confirmation you received when you submitted your PPP loan application.)
+          <b>
+            Please enter the email and forgiveness code associated with your PPP
+            loan.
+          </b>{' '}
+          If you need a new code simply click the “I can’t find my code” link
+          below. (When you filled out your PPP application with us you should
+          have received a code to use for forgiveness. That code is 7-digits and
+          is in the email confirmation you received when you submitted your PPP
+          loan application.)
         </HelperText>
         <div css={formWrap}>
           <Formik

@@ -4,6 +4,7 @@ import { useTheme } from 'emotion-theming'
 import { useState } from 'react'
 import axios from 'axios'
 import { Formik } from 'formik'
+import get from 'lodash/get'
 import * as Yup from 'yup'
 import { navigate } from '@reach/router'
 import HelperText from '../components/ui/helperText'
@@ -11,24 +12,25 @@ import Button from '../components/ui/button'
 import Checkbox from '../components/ui/forms/checkbox'
 import FooterNav from '../components/ui/footerNav'
 import Layout from '../components/layout'
+import config from '../config'
 import getBankConfig from '../bankConfig'
 
 const bank = getBankConfig()
 
 const validationSchema = Yup.object().shape({
-  neverApplied: Yup.bool()
+  allowUsingDataForErcAgreement: Yup.bool()
     .oneOf([true], 'You must agree before submitting.')
     .required('You must agree before submitting.')
     .typeError('Required'),
-  willNotApply: Yup.bool()
+  exclusiveErcApplicationAgreement: Yup.bool()
     .oneOf([true], 'You must agree before submitting.')
     .required('You must agree before submitting.')
     .typeError('Required'),
 })
 
 const initialValues = {
-  neverApplied: false,
-  willNotApply: false,
+  allowUsingDataForErcAgreement: false,
+  exclusiveErcApplicationAgreement: false,
 }
 
 const formStyle = css`
@@ -105,18 +107,22 @@ const buttonStyles = {
 function ErcConfirm() {
   const { colors } = useTheme()
   const [error, setError] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const app = JSON.parse(localStorage.getItem('application') || '{}')
+  const uniqueId = get(app, 'application.uniqueId', '')
+  const email = get(app, 'customer.email', '')
 
   const handleAuthSubmit = async (values, actions) => {
     actions.setSubmitting(true)
     setError(false)
     try {
-      // const response = await axios.post(
-      //   `${config.API_URL}/api/application/details`,
-      //   { ...values, bank: bank.id }
-      // )
+      await axios.post(`${config.API_URL}/api/forgiveness/erc`, {
+        ...values,
+        bank: bank.id,
+        uniqueId,
+        email,
+      })
       actions.setSubmitting(false)
-      setSuccess(true)
+      navigate('/erc/success')
     } catch (err) {
       actions.setSubmitting(false)
       setError(true)
@@ -128,12 +134,26 @@ function ErcConfirm() {
     <Layout>
       <div css={formStyle}>
         <p css={text}>
-          <b>Looks like we have everything needed to begin processing your Employer Retention Credit.</b>
+          <b>
+            Looks like we have everything needed to begin processing your
+            Employer Retention Credit.
+          </b>
         </p>
         <HelperText>
-          BECAUSE WE ALREADY GATHERED DATA FOR THE RELEVANT TIME PERIODS - 2020 AND 2021 PAYROLL RECORDS - AS PART OF YOUR PPP AND FORGIVENESS APPLICATIONS, WE HAVE EVERYTHING WE NEED TO BEGIN PROCESSING YOUR EMPLOYER RETENTION CREDIT.
+          BECAUSE WE ALREADY GATHERED DATA FOR THE RELEVANT TIME PERIODS - 2020
+          AND 2021 PAYROLL RECORDS - AS PART OF YOUR PPP AND FORGIVENESS
+          APPLICATIONS, WE HAVE EVERYTHING WE NEED TO BEGIN PROCESSING YOUR
+          EMPLOYER RETENTION CREDIT.
         </HelperText>
-        <p css={text}><b>In order for us to begin processing your Employer Retention Credit we need you to confirm that a) you have not yet filed for the Employer Retention Credit and b) once you click “File For Employer Retention Credit” below you will not file for the Employer Retention Credit with another company.</b></p>
+        <p css={text}>
+          <b>
+            In order for us to begin processing your Employer Retention Credit
+            we need you to confirm that a) you have not yet filed for the
+            Employer Retention Credit and b) once you click “File For Employer
+            Retention Credit” below you will not file for the Employer Retention
+            Credit with another company.
+          </b>
+        </p>
         <div css={formWrap}>
           <Formik
             initialValues={initialValues}
@@ -144,13 +164,13 @@ function ErcConfirm() {
               <form onSubmit={handleSubmit}>
                 <div css={row}>
                   <Checkbox
-                    name="neverApplied"
+                    name="allowUsingDataForErcAgreement"
                     label="I have not yet filed for the Employer Retention Credit"
                   />
                 </div>
                 <div css={row}>
                   <Checkbox
-                    name="willNotApply"
+                    name="exclusiveErcApplicationAgreement"
                     label="I will not file for the Employer Retention Credit with another company after doing so with CARES Act SMB"
                   />
                 </div>
