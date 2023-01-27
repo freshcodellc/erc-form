@@ -154,6 +154,25 @@ function ErcConfirm() {
             Credit with another company.
           </b>
         </p>
+        <p css={text}>
+          CARES Act SMB will prepare and file your Employer Retention Credit
+          (ERC). For this service, we charge 10% (far beneath market rates) for
+          our service. You will only be charged if you receive the credit. By
+          clicking this button you agree to these terms. If you have more
+          questions please see our{' '}
+          <a
+            href="https://www.caresactsmb.com/erc-credit"
+            rel="nofollow noreferrer noopener"
+            css={css`
+              color: #f27927;
+              text-decoration: underline;
+            `}
+            target="_blank"
+          >
+            FAQ
+          </a>
+          .
+        </p>
         <div css={formWrap}>
           <Formik
             initialValues={initialValues}
