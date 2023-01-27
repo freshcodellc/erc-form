@@ -111,6 +111,7 @@ function ForgivenessAuth() {
     localStorage.removeItem('disclosures')
     localStorage.removeItem('fileToken')
     localStorage.removeItem('forgivenessApp')
+    localStorage.removeItem('forgivenessAuth')
     localStorage.removeItem('forgivenessDocs')
     localStorage.removeItem('forgivenessStart')
     localStorage.removeItem('info')
@@ -203,7 +204,7 @@ function ForgivenessAuth() {
                     The email and unique ID you entered did not match.
                   </span>
                 )}
-                <Persist name="forgivenessAuth" ignoreFields={['uniqueId']} />
+                <Persist name="ercAuth" ignoreFields={['uniqueId']} />
               </form>
             )}
           </Formik>
