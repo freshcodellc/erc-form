@@ -13,9 +13,6 @@ import Checkbox from '../components/ui/forms/checkbox'
 import FooterNav from '../components/ui/footerNav'
 import Layout from '../components/layout'
 import config from '../config'
-import getBankConfig from '../bankConfig'
-
-const bank = getBankConfig()
 
 const validationSchema = Yup.object().shape({
   allowUsingDataForErcAgreement: Yup.bool()
@@ -110,6 +107,7 @@ function ErcConfirm() {
   const app = JSON.parse(localStorage.getItem('application') || '{}')
   const uniqueId = get(app, 'application.uniqueId', '')
   const email = get(app, 'customer.email', '')
+  const bank = get(app, 'bank.slug', '')
 
   const handleAuthSubmit = async (values, actions) => {
     actions.setSubmitting(true)
@@ -117,7 +115,7 @@ function ErcConfirm() {
     try {
       await axios.post(`${config.API_URL}/api/application/erc`, {
         ...values,
-        bank: bank.id,
+        bank,
         uniqueId,
         email,
       })

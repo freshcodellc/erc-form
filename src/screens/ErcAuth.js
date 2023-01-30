@@ -15,9 +15,6 @@ import Input from '../components/ui/forms/input'
 import Layout from '../components/layout'
 import Persist from '../components/persist'
 import config from '../config'
-import getBankConfig from '../bankConfig'
-
-const bank = getBankConfig()
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -120,18 +117,45 @@ function ForgivenessAuth() {
   const handleAuthSubmit = async (values, actions) => {
     actions.setSubmitting(true)
     setError(false)
-    try {
-      const response = await axios.post(
-        `${config.API_URL}/api/application/details`,
-        { ...values, bank: bank.id }
-      )
+    let responseData
+
+    const solera = await axios
+      .post(`${config.API_URL}/api/application/details`, {
+        ...values,
+        bank: 'solera',
+      })
+      .catch(err => null)
+    const seattle = await axios
+      .post(`${config.API_URL}/api/application/details`, {
+        ...values,
+        bank: 'seattle',
+      })
+      .catch(err => null)
+    const titan = await axios
+      .post(`${config.API_URL}/api/application/details`, {
+        ...values,
+        bank: 'titan',
+      })
+      .catch(err => null)
+
+    if (solera) {
+      responseData = solera.data
+    }
+    if (seattle) {
+      responseData = seattle.data
+    }
+    if (titan) {
+      responseData = titan.data
+    }
+
+    if (responseData) {
+      localStorage.setItem('application', JSON.stringify(responseData))
       actions.setSubmitting(false)
-      localStorage.setItem('application', JSON.stringify(response.data))
       navigate('/erc/confirm')
-    } catch (err) {
+    } else {
       actions.setSubmitting(false)
       setError(true)
-      return err.response
+      return null
     }
   }
 
