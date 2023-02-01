@@ -99,6 +99,7 @@ function ForgivenessAuth() {
   localStorage.removeItem('LOAN_ID')
   const { colors } = useTheme()
   const [error, setError] = useState(false)
+  const [seattleError, setSeattleError] = useState(false)
 
   useEffect(() => {
     localStorage.removeItem('businessInfo')
@@ -117,6 +118,7 @@ function ForgivenessAuth() {
   const handleAuthSubmit = async (values, actions) => {
     actions.setSubmitting(true)
     setError(false)
+    setSeattleError(false)
     let responseData
 
     const solera = await axios
@@ -149,6 +151,11 @@ function ForgivenessAuth() {
     }
 
     if (responseData) {
+      if (responseData?.bank?.slug === 'seattle') {
+        actions.setSubmitting(false)
+        setSeattleError(true)
+        return null
+      }
       localStorage.setItem('application', JSON.stringify(responseData))
       actions.setSubmitting(false)
       navigate('/erc/confirm')
@@ -226,6 +233,17 @@ function ForgivenessAuth() {
                     `}
                   >
                     The email and unique ID you entered did not match.
+                  </span>
+                )}
+                {seattleError && (
+                  <span
+                    css={css`
+                      color: ${colors.orange};
+                    `}
+                  >
+                    We are not currently accepting applications from Seattle
+                    Bank customers. We will let you know if this changes in the
+                    future.
                   </span>
                 )}
                 <Persist name="ercAuth" ignoreFields={['uniqueId']} />
