@@ -8,7 +8,7 @@ const BANKS = {
     erc: true,
     limitEarlyForgiveness: false,
     logo: null,
-    id: 'seattle',
+    id: 'solera',
     name: 'CARES Act SMB',
     email: 'admin@caresactsmb.com',
     address: '',
